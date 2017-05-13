@@ -4,25 +4,24 @@
 
 # Author: Sky Maya
 # https://github.com/skymaya
-# Connects to the SSL port of a hostname and attempts to retrieve certificate details.
-# Warning and critical values must be given as integers. Optionally, provide the
-# name of the certificate issuer (i.e COMODO). By default, the plugin will alert
-# critial if the provided hostname doesn't match what's in the certificate.
+# Uses snmpget to return the 1 minute, 5 minute, and 15 minute load levels of
+# a host. Accepts warning and critical values as comma-separated floats or integers
+# and compares them to current load levels.
 #
 # REQUIRES: netsnmp (apt-get install libsnmp-python)
 #
 # Example Nagios command for commands.cfg (or where your command templates are stored):
 #
 # define command {
-#     command_name check_ssl
-#     command_line $USER1$/check_ssl.py -H $HOSTADDRESS$ -p $ARG1$ -w $ARG2$ -c $ARG3$
+#     command_name check_load
+#     command_line $USER1$/check_load.py -H $HOSTADDRESS$ -C $ARG1$ -w $ARG2$ -c $ARG3$
 # }
 #
 # Example Nagios service for the host file:
 #
 # define service {
-#     name check_ssl
-#     check_command check_ssl!443!30!10!-i Symantec
+#     name check_load
+#     check_command check_load!secretpass!1,3,5!5,7,9
 # }
 #
 
