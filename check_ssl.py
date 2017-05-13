@@ -4,6 +4,25 @@
 
 # Author: Sky Maya
 # https://github.com/skymaya
+# Connects to the SSL port of a hostname and attempts to retrieve certificate details.
+# Warning and critical values must be given as integers. Optionally, provide the
+# name of the certificate issuer (i.e COMODO). By default, the plugin will alert
+# critial if the provided hostname doesn't match what's in the certificate.
+#
+# Example Nagios command for commands.cfg (or where your command templates are stored):
+#
+# define command {
+#     command_name check_ssl
+#     command_line $USER1$/check_ssl.py -H $HOSTADDRESS$ -p $ARG1$ -w $ARG2$ -c $ARG3$
+# }
+#
+# Example Nagios service for the host file:
+#
+# define service {
+#     name check_ssl
+#     check_command check_ssl!443!30!10
+# }
+#
 
 from __future__ import print_function
 
@@ -63,7 +82,11 @@ try:
     SSL_SOCK.settimeout(TIMEOUT)
     SSL_SOCK.connect((HOSTNAME, PORT))
     CERT = SSL_SOCK.getpeercert()
+    ssl.match_hostname(CERT, HOSTNAME)
 except socket.error as err:
+    print('CRITICAL: {0}'.format(err))
+    sys.exit(2)
+except ssl.CertificateError as err:
     print('CRITICAL: {0}'.format(err))
     sys.exit(2)
 finally:
@@ -73,10 +96,6 @@ ISSUER = dict(i[0] for i in CERT['issuer'])
 SUBJECT = dict(i[0] for i in CERT['subject'])
 NOT_AFTER = convert_cert_date(CERT['notAfter'])
 DIFFERENCE = int((NOT_AFTER - TODAY).days)
-
-if not SUBJECT['commonName'].endswith(HOSTNAME):
-    print("CRITICAL: Hostname doesn't match certificate")
-    sys.exit(2)
 
 if EXPECT_ISSUER and EXPECT_ISSUER not in ISSUER['commonName']:
     print("CRITICAL: {0} not found in issuer string".format(EXPECT_ISSUER))
