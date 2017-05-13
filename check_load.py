@@ -8,7 +8,7 @@
 # a host. Accepts warning and critical values as comma-separated floats or integers
 # and compares them to current load levels.
 #
-# REQUIRES: netsnmp (apt-get install libsnmp-python)
+# REQUIRES: netsnmp (apt-get install libsnmp-python, CentOS just install net-snmp stuff)
 #
 # Example Nagios command for commands.cfg (or where your command templates are stored):
 #
