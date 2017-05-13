@@ -20,7 +20,7 @@
 #
 # define service {
 #     name check_ssl
-#     check_command check_ssl!443!30!10
+#     check_command check_ssl!443!30!10!-i Symantec
 # }
 #
 

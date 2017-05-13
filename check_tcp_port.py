@@ -4,6 +4,27 @@
 
 # Author: Sky Maya
 # https://github.com/skymaya
+# Attempts to connect to a given port for the given host. A custom timeout value
+# may be provided but the default is 5 seconds. This plugin can be used to check
+# any tcp port connection; 80, 443, 22, 21, 25, etc. It's just a very generic
+# port check plugin. Alerts critical if a connection can't be made or ok if it
+# connects.
+#
+# Example Nagios command for commands.cfg (or where your command templates are stored):
+#
+# define command {
+#     command_name check_tcp_port
+#     command_line $USER1$/check_tcp_port.py -H $HOSTADDRESS$ -p $ARG1$
+# }
+#
+# Example Nagios service for the host file:
+#
+# define service {
+#     name check_tcp_port
+#     check_command check_tcp_port!80!-t 3
+# }
+#
+
 
 from __future__ import print_function
 
