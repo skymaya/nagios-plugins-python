@@ -51,10 +51,12 @@ PARSER.add_argument('-C', '--community',
                     help='SNMP community password',
                     required=True)
 PARSER.add_argument('-w', '--warn',
-                    help='Comma-separated values for 1, 5, 15 min load to trigger a warning',
+                    help='''Comma-separated values for 1, 5, 15 min load to
+                    trigger a warning''',
                     required=True)
 PARSER.add_argument('-c', '--critical',
-                    help='Comma-separated values for 1, 5, 15 min load to trigger a critical alert',
+                    help='''Comma-separated values for 1, 5, 15 min load to
+                    trigger a critical alert''',
                     required=True)
 ARGS = PARSER.parse_args()
 
