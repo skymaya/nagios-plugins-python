@@ -58,13 +58,16 @@ PARSER.add_argument('-p', '--port',
                     help='port to check, i.e. 443',
                     required=True)
 PARSER.add_argument('-w', '--warn',
-                    help='Number of days until certificate expiration to trigger a warning',
+                    help='''Number of days until certificate expiration to
+                    trigger a warning''',
                     required=True)
 PARSER.add_argument('-c', '--critical',
-                    help='Number of days until certificate expiration to trigger a critical alert',
+                    help='''Number of days until certificate expiration to
+                    trigger a critical alert''',
                     required=True)
 PARSER.add_argument('-i', '--issuer',
-                    help='Optional: this text must appear in the issuer string, i.e COMODO',
+                    help='''Optional: this text must appear in the issuer
+                    string, i.e COMODO''',
                     required=False)
 ARGS = PARSER.parse_args()
 
