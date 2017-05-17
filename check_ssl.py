@@ -96,42 +96,30 @@ def socket_connect(host, port, timeout):
 
 def main():
     args = do_argparser()
-
-    hostname = args.host
-    port = int(args.port)
-    warn = int(args.warn)
-    critical = int(args.critical)
-    expect_issuer = args.issuer
     today = convert_today_date()
     timeout = 5
-
-    cert = socket_connect(hostname, port, timeout)
-
+    cert = socket_connect(args.host, int(args.port), timeout)
     issuer = dict(i[0] for i in cert['issuer'])
     not_after = convert_cert_date(cert['notAfter'])
     difference = int((not_after - today).days)
 
-    if expect_issuer and expect_issuer not in issuer['commonName']:
-        print("CRITICAL: {0} not found in issuer string".format(expect_issuer))
+    if args.issuer and args.issuer not in issuer['commonName']:
+        print("CRITICAL: {0} not found in issuer string".format(args.issuer))
         sys.exit(2)
 
-    if difference <= critical and difference > 0:
+    if difference <= int(args.critical) and difference > 0:
         print('CRITICAL: certificate expires in {0} days'.format(difference))
         sys.exit(2)
 
-    if difference == 0:
-        print('CRITICAL: certificate expired today')
-        sys.exit(2)
-
-    if difference < 0:
+    if difference <= 0:
         print('CRITICAL: certificate expired {0} days ago'.format(abs(difference)))
         sys.exit(2)
 
-    if difference <= warn and difference < critical:
-        print('warnING: certificate expires in {0} days'.format(difference))
+    if difference <= int(args.warn) and difference < int(args.critical):
+        print('WARNING: certificate expires in {0} days'.format(difference))
         sys.exit(1)
 
-    if difference > warn:
+    if difference > int(args.warn):
         print('OK: certificate expires in {0} days'.format(difference))
         sys.exit(0)
 
