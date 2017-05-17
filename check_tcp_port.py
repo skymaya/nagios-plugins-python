@@ -33,35 +33,47 @@ import socket
 import argparse
 import sys
 
-PARSER = argparse.ArgumentParser(usage='check_tcp_port.py -H host -p port -t timeout')
-PARSER.add_argument('-H', '--host',
-                    help='Host to check, i.e. 127.0.0.1',
-                    required=True)
-PARSER.add_argument('-p', '--port',
-                    help='port to check, i.e. 80',
-                    required=True)
-PARSER.add_argument('-t', '--timeout',
-                    help='optional timeout, default is 5 seconds',
-                    required=False)
-ARGS = PARSER.parse_args()
 
-HOST = ARGS.host
-PORT = int(ARGS.port)
+def do_argparser():
+    """Parse and return command line arguments"""
+    parser = argparse.ArgumentParser(usage='check_tcp_port.py -H host -p port -t timeout')
+    parser.add_argument('-H', '--host',
+                        help='Host to check, i.e. 127.0.0.1',
+                        required=True)
+    parser.add_argument('-p', '--port',
+                        help='port to check, i.e. 80',
+                        required=True)
+    parser.add_argument('-t', '--timeout',
+                        help='optional timeout, default is 5 seconds',
+                        required=False)
+    return parser.parse_args()
 
-if ARGS.timeout:
-    TIMEOUT = ARGS.timeout
-else:
-    TIMEOUT = 5
 
-try:
-    SOCK = socket.socket()
-    SOCK.settimeout(TIMEOUT)
-    SOCK.connect((HOST, PORT))
-except socket.timeout as err:
-    print('CRITICAL: Connection to port {0} failed: {1}'.format(PORT, err))
-    sys.exit(2)
-else:
-    print('OK: Connection to port {0} successful'.format(PORT))
-    sys.exit(0)
-finally:
-    SOCK.close()
+def main():
+    """Main function"""
+    args = do_argparser()
+
+    host = args.host
+    port = int(args.port)
+
+    if args.timeout:
+        timeout = float(args.timeout)
+    else:
+        timeout = 5.0
+
+    try:
+        sock = socket.socket()
+        sock.settimeout(timeout)
+        sock.connect((host, port))
+    except socket.timeout as err:
+        print('CRITICAL: Connection to port {0} failed: {1}'.format(port, err))
+        sys.exit(2)
+    else:
+        print('OK: Connection to port {0} successful'.format(port))
+        sys.exit(0)
+    finally:
+        sock.close()
+
+
+if __name__ == "__main__":
+    main()
