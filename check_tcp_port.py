@@ -36,16 +36,18 @@ import sys
 
 def do_argparser():
     """Parse and return command line arguments"""
-    parser = argparse.ArgumentParser(usage='check_tcp_port.py -H host -p port -t timeout')
+    host_help = 'Host to check, i.e. 127.0.0.1'
+    usage_help = 'check_tcp_port.py -H host -p port -t timeout'
+    port_help = 'port to check, i.e. 80'
+    timout_help = 'optional timeout, default is 5 seconds'
+
+    parser = argparse.ArgumentParser(usage=usage_help)
     parser.add_argument('-H', '--host',
-                        help='Host to check, i.e. 127.0.0.1',
-                        required=True)
+                        help=host_help, required=True)
     parser.add_argument('-p', '--port',
-                        help='port to check, i.e. 80',
-                        required=True)
+                        help=port_help, type=int, required=True)
     parser.add_argument('-t', '--timeout',
-                        help='optional timeout, default is 5 seconds',
-                        required=False)
+                        help=timout_help, type=float, required=False)
     return parser.parse_args()
 
 
@@ -71,9 +73,9 @@ def main():
     """Main function"""
     args = do_argparser()
     host = args.host
-    port = int(args.port)
+    port = args.port
     if args.timeout:
-        timeout = float(args.timeout)
+        timeout = args.timeout
     else:
         timeout = 5.0
     socket_connect(host, port, timeout)
