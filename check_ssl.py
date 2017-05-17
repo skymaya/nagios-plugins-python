@@ -50,76 +50,91 @@ def convert_today_date():
     return today
 
 
-PARSER = argparse.ArgumentParser(usage='check_ssl.py -H host -p port -w warn -c critical -i issuer')
-PARSER.add_argument('-H', '--host',
-                    help='Host to check, i.e. 127.0.0.1',
-                    required=True)
-PARSER.add_argument('-p', '--port',
-                    help='port to check, i.e. 443',
-                    required=True)
-PARSER.add_argument('-w', '--warn',
-                    help='''Number of days until certificate expiration to
-                    trigger a warning''',
-                    required=True)
-PARSER.add_argument('-c', '--critical',
-                    help='''Number of days until certificate expiration to
-                    trigger a critical alert''',
-                    required=True)
-PARSER.add_argument('-i', '--issuer',
-                    help='''Optional: this text must appear in the issuer
-                    string, i.e COMODO''',
-                    required=False)
-ARGS = PARSER.parse_args()
+def do_argparser():
+    """Parse and return command line arguments"""
+    parser = argparse.ArgumentParser(usage='''check_ssl.py -H host -p port -w
+                                    warn -c critical -i issuer''')
+    parser.add_argument('-H', '--host',
+                        help='Host to check, i.e. 127.0.0.1',
+                        required=True)
+    parser.add_argument('-p', '--port',
+                        help='port to check, i.e. 443',
+                        required=True)
+    parser.add_argument('-w', '--warn',
+                        help='''Number of days until certificate expiration to
+                        trigger a warning''',
+                        required=True)
+    parser.add_argument('-c', '--critical',
+                        help='''Number of days until certificate expiration to
+                        trigger a critical alert''',
+                        required=True)
+    parser.add_argument('-i', '--issuer',
+                        help='''Optional: this text must appear in the issuer
+                        string, i.e COMODO''',
+                        required=False)
+    return parser.parse_args()
 
-HOSTNAME = ARGS.host
-PORT = int(ARGS.port)
-WARN = int(ARGS.warn)
-CRITICAL = int(ARGS.critical)
-EXPECT_ISSUER = ARGS.issuer
-TODAY = convert_today_date()
-TIMEOUT = 5
 
-try:
-    CONTEXT = ssl.create_default_context()
-    SSL_SOCK = CONTEXT.wrap_socket(socket.socket(), server_hostname=HOSTNAME)
-    SSL_SOCK.settimeout(TIMEOUT)
-    SSL_SOCK.connect((HOSTNAME, PORT))
-    CERT = SSL_SOCK.getpeercert()
-    ssl.match_hostname(CERT, HOSTNAME)
-except socket.error as err:
-    print('CRITICAL: {0}'.format(err))
-    sys.exit(2)
-except ssl.CertificateError as err:
-    print('CRITICAL: {0}'.format(err))
-    sys.exit(2)
-finally:
-    SSL_SOCK.close()
+def socket_connect(host, port, timeout):
+    try:
+        context = ssl.create_default_context()
+        ssl_sock = context.wrap_socket(socket.socket(), server_hostname=host)
+        ssl_sock.settimeout(timeout)
+        ssl_sock.connect((host, port))
+        cert_info = ssl_sock.getpeercert()
+        ssl.match_hostname(cert_info, host)
+    except socket.error as err:
+        print('CRITICAL: {0}'.format(err))
+        sys.exit(2)
+    except ssl.CertificateError as err:
+        print('CRITICAL: {0}'.format(err))
+        sys.exit(2)
+    finally:
+        ssl_sock.close()
+    return cert_info
 
-ISSUER = dict(i[0] for i in CERT['issuer'])
-SUBJECT = dict(i[0] for i in CERT['subject'])
-NOT_AFTER = convert_cert_date(CERT['notAfter'])
-DIFFERENCE = int((NOT_AFTER - TODAY).days)
 
-if EXPECT_ISSUER and EXPECT_ISSUER not in ISSUER['commonName']:
-    print("CRITICAL: {0} not found in issuer string".format(EXPECT_ISSUER))
-    sys.exit(2)
+def main():
+    args = do_argparser()
 
-if DIFFERENCE <= CRITICAL and DIFFERENCE > 0:
-    print('CRITICAL: certificate expires in {0} days'.format(DIFFERENCE))
-    sys.exit(2)
+    hostname = args.host
+    port = int(args.port)
+    warn = int(args.warn)
+    critical = int(args.critical)
+    expect_issuer = args.issuer
+    today = convert_today_date()
+    timeout = 5
 
-if DIFFERENCE == 0:
-    print('CRITICAL: certificate expired today')
-    sys.exit(2)
+    cert = socket_connect(hostname, port, timeout)
 
-if DIFFERENCE < 0:
-    print('CRITICAL: certificate expired {0} days ago'.format(abs(DIFFERENCE)))
-    sys.exit(2)
+    issuer = dict(i[0] for i in cert['issuer'])
+    not_after = convert_cert_date(cert['notAfter'])
+    difference = int((not_after - today).days)
 
-if DIFFERENCE <= WARN and DIFFERENCE < CRITICAL:
-    print('WARNING: certificate expires in {0} days'.format(DIFFERENCE))
-    sys.exit(1)
+    if expect_issuer and expect_issuer not in issuer['commonName']:
+        print("CRITICAL: {0} not found in issuer string".format(expect_issuer))
+        sys.exit(2)
 
-if DIFFERENCE > WARN:
-    print('OK: certificate expires in {0} days'.format(DIFFERENCE))
-    sys.exit(0)
+    if difference <= critical and difference > 0:
+        print('CRITICAL: certificate expires in {0} days'.format(difference))
+        sys.exit(2)
+
+    if difference == 0:
+        print('CRITICAL: certificate expired today')
+        sys.exit(2)
+
+    if difference < 0:
+        print('CRITICAL: certificate expired {0} days ago'.format(abs(difference)))
+        sys.exit(2)
+
+    if difference <= warn and difference < critical:
+        print('warnING: certificate expires in {0} days'.format(difference))
+        sys.exit(1)
+
+    if difference > warn:
+        print('OK: certificate expires in {0} days'.format(difference))
+        sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
