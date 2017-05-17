@@ -70,15 +70,12 @@ def socket_connect(host, port, timeout):
 def main():
     """Main function"""
     args = do_argparser()
-
     host = args.host
     port = int(args.port)
-
     if args.timeout:
         timeout = float(args.timeout)
     else:
         timeout = 5.0
-
     socket_connect(host, port, timeout)
 
 
