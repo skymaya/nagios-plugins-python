@@ -52,30 +52,30 @@ def convert_today_date():
 
 def do_argparser():
     """Parse and return command line arguments"""
-    parser = argparse.ArgumentParser(usage='''check_ssl.py -H host -p port -w
-                                    warn -c critical -i issuer''')
+    usage_help = 'check_ssl.py -H host -p port -w warn -c critical -i issuer'
+    host_help = 'Host to check, i.e. 127.0.0.1'
+    port_help = 'port to check, i.e. 443'
+    warn_help = 'Number of days until cert expiration to trigger a warning'
+    critical_help = 'Number of days until cert expiration to trigger an alert'
+    issuer_help = 'Optional: name of issuer, i.e COMODO'
+
+    parser = argparse.ArgumentParser(usage=usage_help)
     parser.add_argument('-H', '--host',
-                        help='Host to check, i.e. 127.0.0.1',
-                        required=True)
+                        help=host_help, required=True)
     parser.add_argument('-p', '--port',
-                        help='port to check, i.e. 443',
-                        required=True)
+                        help=port_help, type=int, required=True)
     parser.add_argument('-w', '--warn',
-                        help='''Number of days until certificate expiration to
-                        trigger a warning''',
-                        required=True)
+                        help=warn_help, type=int, required=True)
     parser.add_argument('-c', '--critical',
-                        help='''Number of days until certificate expiration to
-                        trigger a critical alert''',
-                        required=True)
+                        help=critical_help, type=int, required=True)
     parser.add_argument('-i', '--issuer',
-                        help='''Optional: this text must appear in the issuer
-                        string, i.e COMODO''',
-                        required=False)
+                        help=issuer_help, required=False)
     return parser.parse_args()
 
 
 def socket_connect(host, port, timeout):
+    """Given a host, SSL port, and a timeout value, create a connection
+    socket and return the certificate details"""
     try:
         context = ssl.create_default_context()
         ssl_sock = context.wrap_socket(socket.socket(), server_hostname=host)
@@ -99,7 +99,7 @@ def main():
     args = do_argparser()
     today = convert_today_date()
     timeout = 5
-    cert = socket_connect(args.host, int(args.port), timeout)
+    cert = socket_connect(args.host, args.port, timeout)
     issuer = dict(i[0] for i in cert['issuer'])
     not_after = convert_cert_date(cert['notAfter'])
     difference = int((not_after - today).days)
@@ -108,7 +108,7 @@ def main():
         print("CRITICAL: {0} not found in issuer string".format(args.issuer))
         sys.exit(2)
 
-    if difference > int(args.warn):
+    if difference > args.warn:
         print('OK: cert expires in {0} days'.format(difference))
         sys.exit(0)
 
@@ -116,11 +116,11 @@ def main():
         print('CRITICAL: cert expired {0} days ago'.format(abs(difference)))
         sys.exit(2)
 
-    if difference <= int(args.critical):
+    if difference <= args.critical:
         print('CRITICAL: cert expires in {0} days'.format(difference))
         sys.exit(2)
 
-    if difference <= int(args.warn):
+    if difference <= args.warn:
         print('WARNING: cert expires in {0} days'.format(difference))
         sys.exit(1)
 
