@@ -43,48 +43,57 @@ def do_snmpget(oid, community, host):
     return res
 
 
-PARSER = argparse.ArgumentParser(usage='check_load.py -H host -C community -w [1,5,15] -c [1,5,15]')
-PARSER.add_argument('-H', '--host',
-                    help='Host to check, i.e. 127.0.0.1',
-                    required=True)
-PARSER.add_argument('-C', '--community',
-                    help='SNMP community password',
-                    required=True)
-PARSER.add_argument('-w', '--warn',
-                    help='''Comma-separated values for 1, 5, 15 min load to
-                    trigger a warning''',
-                    required=True)
-PARSER.add_argument('-c', '--critical',
-                    help='''Comma-separated values for 1, 5, 15 min load to
-                    trigger a critical alert''',
-                    required=True)
-ARGS = PARSER.parse_args()
+def do_argparser():
+    """Parse and return command line arguments"""
+    usage_help = 'check_load.py -H host -C community -w [1,5,15] -c [1,5,15]'
+    host_help = 'Host to check, i.e. 127.0.0.1'
+    comm_help = 'SNMP community password'
+    warn_help = 'Comma-separated values for 1, 5, 15 min load to trigger a warning'
+    critical_help = 'Comma-separated values for 1, 5, 15 min load to trigger a critical alert'
 
-COMMUNITY = ARGS.community
-HOST = ARGS.host
-WARN = [float(i) for i in ARGS.warn.split(',')]
-CRITICAL = [float(i) for i in ARGS.critical.split(',')]
+    parser = argparse.ArgumentParser(usage=usage_help)
+    parser.add_argument('-H', '--host',
+                        help=host_help, required=True)
+    parser.add_argument('-C', '--community',
+                        help=comm_help, required=True)
+    parser.add_argument('-w', '--warn',
+                        help=warn_help, required=True)
+    parser.add_argument('-c', '--critical',
+                        help=critical_help, required=True)
+    return parser.parse_args()
 
-M1_OID = '.1.3.6.1.4.1.2021.10.1.3.1'
-M5_OID = '.1.3.6.1.4.1.2021.10.1.3.2'
-M15_OID = '.1.3.6.1.4.1.2021.10.1.3.3'
 
-M1_LOAD = do_snmpget(M1_OID, COMMUNITY, HOST)[0]
-M5_LOAD = do_snmpget(M5_OID, COMMUNITY, HOST)[0]
-M15_LOAD = do_snmpget(M15_OID, COMMUNITY, HOST)[0]
+def main():
+    """Main function"""
+    args = do_argparser()
 
-LOAD = [float(M1_LOAD), float(M5_LOAD), float(M15_LOAD)]
-CHECK_WARN = [l for l, w in zip(LOAD, WARN) if l >= w]
-CHECK_CRITICAL = [l for l, c in zip(LOAD, CRITICAL) if l >= c]
+    warn = [float(i) for i in args.warn.split(',')]
+    critical = [float(i) for i in args.critical.split(',')]
 
-if CHECK_CRITICAL:
-    print('CRITICAL: load is {0}, {1}, {2}'.format(M1_LOAD, M5_LOAD, M15_LOAD))
-    sys.exit(2)
+    m1_oid = '.1.3.6.1.4.1.2021.10.1.3.1'
+    m5_oid = '.1.3.6.1.4.1.2021.10.1.3.2'
+    m15_oid = '.1.3.6.1.4.1.2021.10.1.3.3'
 
-if CHECK_WARN:
-    print('WARNING: load is {0}, {1}, {2}'.format(M1_LOAD, M5_LOAD, M15_LOAD))
-    sys.exit(1)
+    m1_load = do_snmpget(m1_oid, args.community, args.host)[0]
+    m5_load = do_snmpget(m5_oid, args.community, args.host)[0]
+    m15_load = do_snmpget(m15_oid, args.community, args.host)[0]
 
-if not CHECK_WARN and not CHECK_CRITICAL:
-    print('OK: load is {0}, {1}, {2}'.format(M1_LOAD, M5_LOAD, M15_LOAD))
-    sys.exit(0)
+    load = [float(m1_load), float(m5_load), float(m15_load)]
+    check_warn = [l for l, w in zip(load, warn) if l >= w]
+    check_critical = [l for l, c in zip(load, critical) if l >= c]
+
+    if check_critical:
+        print('CRITICAL: load is {0}, {1}, {2}'.format(m1_load, m5_load, m15_load))
+        sys.exit(2)
+
+    if check_warn:
+        print('WARNING: load is {0}, {1}, {2}'.format(m1_load, m5_load, m15_load))
+        sys.exit(1)
+
+    if not check_warn and not check_critical:
+        print('OK: load is {0}, {1}, {2}'.format(m1_load, m5_load, m15_load))
+        sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
