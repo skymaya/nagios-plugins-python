@@ -49,18 +49,10 @@ def do_argparser():
     return parser.parse_args()
 
 
-def main():
-    """Main function"""
-    args = do_argparser()
-
-    host = args.host
-    port = int(args.port)
-
-    if args.timeout:
-        timeout = float(args.timeout)
-    else:
-        timeout = 5.0
-
+def socket_connect(host, port, timeout):
+    """Given a host, port, and timeout values, attempt to connect to the port
+    and throw an exception with CRITICAL message if it fails or print OK status
+    if successful"""
     try:
         sock = socket.socket()
         sock.settimeout(timeout)
@@ -73,6 +65,21 @@ def main():
         sys.exit(0)
     finally:
         sock.close()
+
+
+def main():
+    """Main function"""
+    args = do_argparser()
+
+    host = args.host
+    port = int(args.port)
+
+    if args.timeout:
+        timeout = float(args.timeout)
+    else:
+        timeout = 5.0
+
+    socket_connect(host, port, timeout)
 
 
 if __name__ == "__main__":
