@@ -95,6 +95,7 @@ def socket_connect(host, port, timeout):
 
 
 def main():
+    """Main function"""
     args = do_argparser()
     today = convert_today_date()
     timeout = 5
@@ -107,21 +108,21 @@ def main():
         print("CRITICAL: {0} not found in issuer string".format(args.issuer))
         sys.exit(2)
 
-    if difference <= int(args.critical) and difference > 0:
-        print('CRITICAL: certificate expires in {0} days'.format(difference))
-        sys.exit(2)
+    if difference > int(args.warn):
+        print('OK: cert expires in {0} days'.format(difference))
+        sys.exit(0)
 
     if difference <= 0:
-        print('CRITICAL: certificate expired {0} days ago'.format(abs(difference)))
+        print('CRITICAL: cert expired {0} days ago'.format(abs(difference)))
         sys.exit(2)
 
-    if difference <= int(args.warn) and difference < int(args.critical):
-        print('WARNING: certificate expires in {0} days'.format(difference))
-        sys.exit(1)
+    if difference <= int(args.critical):
+        print('CRITICAL: cert expires in {0} days'.format(difference))
+        sys.exit(2)
 
-    if difference > int(args.warn):
-        print('OK: certificate expires in {0} days'.format(difference))
-        sys.exit(0)
+    if difference <= int(args.warn):
+        print('WARNING: cert expires in {0} days'.format(difference))
+        sys.exit(1)
 
 
 if __name__ == "__main__":
