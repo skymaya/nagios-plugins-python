@@ -50,13 +50,13 @@ class SNMPData(object): # pylint: disable=too-few-public-methods
         return res
 
 
-class Load(SNMPData):
+class LoadData(SNMPData):
     """Functions to make an SNMP connection to retrieve system load data"""
     def __init__(self, community, host):
         self.m1_oid = '.1.3.6.1.4.1.2021.10.1.3.1'
         self.m5_oid = '.1.3.6.1.4.1.2021.10.1.3.2'
         self.m15_oid = '.1.3.6.1.4.1.2021.10.1.3.3'
-        super(Load, self).__init__(community, host)
+        super(LoadData, self).__init__(community, host)
 
     def one_minute(self):
         """Return the one minute load average"""
@@ -101,9 +101,9 @@ def main():
     warn = [float(i) for i in args.warn.split(',')]
     critical = [float(i) for i in args.critical.split(',')]
 
-    m1_load = Load(args.community, args.host).one_minute()
-    m5_load = Load(args.community, args.host).five_minute()
-    m15_load = Load(args.community, args.host).fifteen_minute()
+    m1_load = LoadData(args.community, args.host).one_minute()
+    m5_load = LoadData(args.community, args.host).five_minute()
+    m15_load = LoadData(args.community, args.host).fifteen_minute()
 
     load = [float(m1_load), float(m5_load), float(m15_load)]
     check_warn = [l for l, w in zip(load, warn) if l >= w]
