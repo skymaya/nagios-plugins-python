@@ -74,7 +74,6 @@ def main():
     else:
         timeout = 5
 
-    # SSH-2.0-OpenSSH_6.6.1p1 Ubuntu-2ubuntu2.8
     ssh_data = str(telnet_connect(args.host, args.port, timeout))
 
     if 'SSH' in ssh_data:
