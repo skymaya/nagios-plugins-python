@@ -31,7 +31,6 @@ from __future__ import print_function
 #  standard library imports
 import argparse
 import sys
-import re
 
 # related third party imports
 import requests
@@ -43,37 +42,34 @@ def get_response_code(url):
     return req.status_code
 
 
-def check_code_format(code):
-    """Given a response code, check if it's valid; contains only three
-    positive integers"""
-    code = str(code)
-    check = re.compile(r'^[0-9]{3}$')
-    if not check.match(code):
-        raise ValueError
+def do_argparser():
+    """Parse and return command line arguments"""
+    usage_help = 'check_response_code.py -u url -r responsecode'
+    url_help = 'URL to check, i.e. http://www.example.com'
+    rcode_help = 'Expected response code returned by given URL'
+
+    parser = argparse.ArgumentParser(usage=usage_help)
+    parser.add_argument('-u', '--url',
+                        help=url_help, required=True)
+    parser.add_argument('-r', '--responsecode',
+                        help=rcode_help, type=str, required=True)
+    return parser.parse_args()
 
 
-PARSER = argparse.ArgumentParser(usage='check_response_code.py -u url -r responsecode')
-PARSER.add_argument('-u', '--url',
-                    help='URL to check, i.e. http://www.example.com',
-                    required=True)
-PARSER.add_argument('-r', '--responsecode',
-                    help='''Expected response code returned by given URL''',
-                    required=True)
-ARGS = PARSER.parse_args()
+def main():
+    """Main function"""
+    args = do_argparser()
 
-ACTUAL = str(get_response_code(ARGS.url))
-EXPECTED = str(ARGS.responsecode)
+    actual = str(get_response_code(args.url))
+    expected = args.responsecode
 
-try:
-    check_code_format(ACTUAL)
-    check_code_format(EXPECTED)
-except ValueError as err:
-    print('WARNING: invalid code: expected {0}, got {1}'.format(EXPECTED, ACTUAL))
-    sys.exit(1)
+    if actual == expected:
+        print('OK: expected {0}, got {1}'.format(expected, actual))
+        sys.exit(0)
+    else:
+        print('CRITICAL: expected {0}, got {1}'.format(expected, actual))
+        sys.exit(2)
 
-if ACTUAL == EXPECTED:
-    print('OK: expected {0}, got {1}'.format(EXPECTED, ACTUAL))
-    sys.exit(0)
-else:
-    print('CRITICAL: expected {0}, got {1}'.format(EXPECTED, ACTUAL))
-    sys.exit(2)
+
+if __name__ == "__main__":
+    main()
