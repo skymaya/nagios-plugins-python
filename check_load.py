@@ -35,12 +35,43 @@ import sys
 import netsnmp
 
 
-def do_snmpget(oid, community, host):
-    """Given an oid, community password, and host, return the result of an
-    snmpget"""
-    var = netsnmp.Varbind(oid)
-    res = netsnmp.snmpget(var, Version=2, DestHost=host, Community=community)
-    return res
+class SNMPData(object): # pylint: disable=too-few-public-methods
+    """Functions to make an SNMP connection to retrieve data"""
+    def __init__(self, community, host):
+        self.community = community
+        self.host = host
+
+    @staticmethod
+    def do_snmpget(oid, community, host):
+        """Given an oid, community password, and host, return the result of an
+        snmpget"""
+        var = netsnmp.Varbind(oid)
+        res = netsnmp.snmpget(var, Version=2, DestHost=host, Community=community)
+        return res
+
+
+class Load(SNMPData):
+    """Functions to make an SNMP connection to retrieve system load data"""
+    def __init__(self, community, host):
+        self.m1_oid = '.1.3.6.1.4.1.2021.10.1.3.1'
+        self.m5_oid = '.1.3.6.1.4.1.2021.10.1.3.2'
+        self.m15_oid = '.1.3.6.1.4.1.2021.10.1.3.3'
+        super(Load, self).__init__(community, host)
+
+    def one_minute(self):
+        """Return the one minute load average"""
+        load = self.do_snmpget(self.m1_oid, self.community, self.host)
+        return load[0]
+
+    def five_minute(self):
+        """Return the five minute load average"""
+        load = self.do_snmpget(self.m5_oid, self.community, self.host)
+        return load[0]
+
+    def fifteen_minute(self):
+        """Return the fifteen minute load average"""
+        load = self.do_snmpget(self.m15_oid, self.community, self.host)
+        return load[0]
 
 
 def do_argparser():
@@ -70,13 +101,9 @@ def main():
     warn = [float(i) for i in args.warn.split(',')]
     critical = [float(i) for i in args.critical.split(',')]
 
-    m1_oid = '.1.3.6.1.4.1.2021.10.1.3.1'
-    m5_oid = '.1.3.6.1.4.1.2021.10.1.3.2'
-    m15_oid = '.1.3.6.1.4.1.2021.10.1.3.3'
-
-    m1_load = do_snmpget(m1_oid, args.community, args.host)[0]
-    m5_load = do_snmpget(m5_oid, args.community, args.host)[0]
-    m15_load = do_snmpget(m15_oid, args.community, args.host)[0]
+    m1_load = Load(args.community, args.host).one_minute()
+    m5_load = Load(args.community, args.host).five_minute()
+    m15_load = Load(args.community, args.host).fifteen_minute()
 
     load = [float(m1_load), float(m5_load), float(m15_load)]
     check_warn = [l for l, w in zip(load, warn) if l >= w]
