@@ -60,58 +60,64 @@ def get_rtt(output):
     return float(rtt)
 
 
-PARSER = argparse.ArgumentParser(usage='check_ping.py -H host -w [pl,rtt] -c [pl,rtt]')
-PARSER.add_argument('-H', '--host',
-                    help='Host to check, i.e. 127.0.0.1',
-                    required=True)
-PARSER.add_argument('-w', '--warn',
-                    help='''Comma-separated values for packet loss, transit time
-                    to trigger a warning''',
-                    required=True)
-PARSER.add_argument('-c', '--critical',
-                    help='''Comma-separated values for packet loss, transit time
-                    to trigger a critical alert''',
-                    required=True)
-PARSER.add_argument('-t', '--timeout',
-                    help='''Optional: specify a timeout to wait for ping
-                    response, defaults to 5 seconds''',
-                    required=False)
-PARSER.add_argument('-p', '--packets',
-                    help='''Optional: specify the number of packets to transmit,
-                    defaults to 5''',
-                    required=False)
-ARGS = PARSER.parse_args()
+def do_argparser():
+    """Parse and return command line arguments"""
+    usage_help = 'check_ping.py -H host -w [pl,rtt] -c [pl,rtt]'
+    host_help = 'Host to check, i.e. 127.0.0.1'
+    warn_help = 'Comma-separated values for packet loss, transit time to trigger a warning'
+    critical_help = '''Comma-separated values for packet loss, transit time to
+    trigger a critical alert'''
+    timout_help = 'Optional: specify a timeout to wait for ping response, defaults to 5 seconds'
+    packets_help = 'Optional: specify the number of packets to transmit, defaults to 5'
 
-if ARGS.timeout:
-    TIMEOUT = ARGS.timeout
-else:
-    TIMEOUT = '5'
+    parser = argparse.ArgumentParser(usage=usage_help)
+    parser.add_argument('-H', '--host',
+                        help=host_help, required=True)
+    parser.add_argument('-w', '--warn',
+                        help=warn_help, required=True)
+    parser.add_argument('-c', '--critical',
+                        help=critical_help, required=True)
+    parser.add_argument('-t', '--timeout',
+                        help=timout_help, required=False)
+    parser.add_argument('-p', '--packets',
+                        help=packets_help, required=False)
+    return parser.parse_args()
 
-if ARGS.packets:
-    PACKETS = ARGS.packets
-else:
-    PACKETS = '5'
 
-HOST = ARGS.host
+def main():
+    """Main function"""
+    args = do_argparser()
 
-PING = do_ping(PACKETS, HOST, TIMEOUT)
+    if args.timeout:
+        timeout = args.timeout
+    else:
+        timeout = '5'
 
-PL = get_packetloss(PING)
-RTT = get_rtt(PING)
+    if args.packets:
+        packets = args.packets
+    else:
+        packets = '5'
 
-WARN_PL = float(ARGS.warn.split(',')[0])
-CRITICAL_PL = float(ARGS.critical.split(',')[0])
-WARN_RTT = float(ARGS.warn.split(',')[1])
-CRITICAL_RTT = float(ARGS.critical.split(',')[1])
+    ping = do_ping(packets, args.host, timeout)
+    pktloss = get_packetloss(ping)
+    rtt = get_rtt(ping)
 
-if PL >= CRITICAL_PL or RTT >= CRITICAL_RTT:
-    print('CRITICAL: packet loss {0}%, rtt avg {1} ms'.format(PL, RTT))
-    sys.exit(2)
+    warn_pl = float(args.warn.split(',')[0])
+    critical_pl = float(args.critical.split(',')[0])
+    warn_rtt = float(args.warn.split(',')[1])
+    critical_rtt = float(args.critical.split(',')[1])
 
-if PL >= WARN_PL or RTT >= WARN_RTT:
-    print('WARNING: packet loss {0}%, rtt avg {1} ms'.format(PL, RTT))
-    sys.exit(1)
+    if pktloss >= critical_pl or rtt >= critical_rtt:
+        print('CRITICAL: packet loss {0}%, rtt avg {1} ms'.format(pktloss, rtt))
+        sys.exit(2)
 
-if PL < WARN_PL and RTT < WARN_RTT:
-    print('OK: packet loss {0}%, rtt avg {1} ms'.format(PL, RTT))
-    sys.exit(0)
+    if pktloss >= warn_pl or rtt >= warn_rtt:
+        print('WARNING: packet loss {0}%, rtt avg {1} ms'.format(pktloss, rtt))
+        sys.exit(1)
+
+    if pktloss < warn_pl and rtt < warn_rtt:
+        print('OK: packet loss {0}%, rtt avg {1} ms'.format(pktloss, rtt))
+        sys.exit(0)
+
+if __name__ == "__main__":
+    main()
