@@ -67,7 +67,7 @@ def do_argparser():
     warn_help = 'Comma-separated values for packet loss, transit time to trigger a warning'
     critical_help = '''Comma-separated values for packet loss, transit time to
     trigger a critical alert'''
-    timout_help = 'Optional: specify a timeout to wait for ping response, defaults to 5 seconds'
+    timeout_help = 'Optional: specify a timeout to wait for ping response, defaults to 5 seconds'
     packets_help = 'Optional: specify the number of packets to transmit, defaults to 5'
 
     parser = argparse.ArgumentParser(usage=usage_help)
@@ -78,7 +78,7 @@ def do_argparser():
     parser.add_argument('-c', '--critical',
                         help=critical_help, required=True)
     parser.add_argument('-t', '--timeout',
-                        help=timout_help, required=False)
+                        help=timeout_help, required=False)
     parser.add_argument('-p', '--packets',
                         help=packets_help, required=False)
     return parser.parse_args()

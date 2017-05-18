@@ -39,7 +39,7 @@ def do_argparser():
     host_help = 'Host to check, i.e. 127.0.0.1'
     usage_help = 'check_tcp_port.py -H host -p port -t timeout'
     port_help = 'port to check, i.e. 80'
-    timout_help = 'optional timeout, default is 5 seconds'
+    timeout_help = 'optional timeout, default is 5 seconds'
 
     parser = argparse.ArgumentParser(usage=usage_help)
     parser.add_argument('-H', '--host',
@@ -47,7 +47,7 @@ def do_argparser():
     parser.add_argument('-p', '--port',
                         help=port_help, type=int, required=True)
     parser.add_argument('-t', '--timeout',
-                        help=timout_help, type=float, required=False)
+                        help=timeout_help, type=float, required=False)
     return parser.parse_args()
 
 
