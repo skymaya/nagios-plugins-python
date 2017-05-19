@@ -104,9 +104,11 @@ def main():
     warn = [float(i) for i in args.warn.split(',')]
     critical = [float(i) for i in args.critical.split(',')]
 
-    m1_load = LoadData(args.community, args.host).one_minute()
-    m5_load = LoadData(args.community, args.host).five_minute()
-    m15_load = LoadData(args.community, args.host).fifteen_minute()
+    all_load = LoadData(args.community, args.host)
+
+    m1_load = all_load.one_minute()
+    m5_load = all_load.five_minute()
+    m15_load = all_load.fifteen_minute()
 
     load = [float(m1_load), float(m5_load), float(m15_load)]
     check_warn = [l for l, w in zip(load, warn) if l >= w]
