@@ -36,7 +36,7 @@ def do_ping(packets, host, timeout):
     ping the host and return a list containing the results"""
     ping = subprocess.Popen(['ping', '-q', '-W', timeout, '-c', packets, host],
                             stdout=subprocess.PIPE)
-    output = ping.communicate()[0]
+    output = str(ping.communicate()[0])
     ping.stdout.close()
     output = [i for i in output.split('\n') if i.strip()]
     return output
