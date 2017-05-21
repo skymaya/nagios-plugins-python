@@ -118,7 +118,7 @@ def main():
 
     host_now = TimeData(args.community, args.host).host_time_utc()
     now = datetime.utcnow()
-    diff = abs(now - host_now).seconds / 60.0
+    diff = round(abs(now - host_now).seconds / 60.0, 3)
 
     if diff >= args.critical:
         print('CRITICAL: drift is {0}, time is {1} UTC'.format(diff, host_now))
