@@ -59,16 +59,12 @@ def do_argparser():
     issuer_help = 'Optional: name of issuer, i.e COMODO'
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-H', '--host',
-                        help=host_help, required=True)
-    parser.add_argument('-p', '--port',
-                        help=port_help, type=int, required=True)
-    parser.add_argument('-w', '--warn',
-                        help=warn_help, type=int, required=True)
-    parser.add_argument('-c', '--critical',
-                        help=critical_help, type=int, required=True)
-    parser.add_argument('-i', '--issuer',
-                        help=issuer_help, required=False)
+    parser.add_argument('-H', '--host', help=host_help, required=True)
+    parser.add_argument('-p', '--port', help=port_help, type=int, required=True)
+    parser.add_argument('-w', '--warn', help=warn_help, type=int, required=True)
+    parser.add_argument('-c', '--critical', help=critical_help, type=int,
+                        required=True)
+    parser.add_argument('-i', '--issuer', help=issuer_help, required=False)
     return parser.parse_args()
 
 

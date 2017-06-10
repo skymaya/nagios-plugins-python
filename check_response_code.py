@@ -48,10 +48,9 @@ def do_argparser():
     rcode_help = 'Expected response code returned by given URL'
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-u', '--url',
-                        help=url_help, required=True)
-    parser.add_argument('-r', '--responsecode',
-                        help=rcode_help, type=str, required=True)
+    parser.add_argument('-u', '--url', help=url_help, required=True)
+    parser.add_argument('-r', '--responsecode', help=rcode_help, type=str,
+                        required=True)
     return parser.parse_args()
 
 

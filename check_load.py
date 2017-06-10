@@ -85,14 +85,10 @@ def do_argparser():
     critical_help = 'Comma-separated values for 1, 5, 15 min load to trigger a critical alert'
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-H', '--host',
-                        help=host_help, required=True)
-    parser.add_argument('-C', '--community',
-                        help=comm_help, required=True)
-    parser.add_argument('-w', '--warn',
-                        help=warn_help, required=True)
-    parser.add_argument('-c', '--critical',
-                        help=critical_help, required=True)
+    parser.add_argument('-H', '--host', help=host_help, required=True)
+    parser.add_argument('-C', '--community', help=comm_help, required=True)
+    parser.add_argument('-w', '--warn', help=warn_help, required=True)
+    parser.add_argument('-c', '--critical', help=critical_help, required=True)
     return parser.parse_args()
 
 

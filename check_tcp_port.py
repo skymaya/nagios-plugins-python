@@ -41,12 +41,10 @@ def do_argparser():
     timeout_help = 'optional timeout, default is 5 seconds'
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-H', '--host',
-                        help=host_help, required=True)
-    parser.add_argument('-p', '--port',
-                        help=port_help, type=int, required=True)
-    parser.add_argument('-t', '--timeout',
-                        help=timeout_help, type=float, required=False)
+    parser.add_argument('-H', '--host', help=host_help, required=True)
+    parser.add_argument('-p', '--port', help=port_help, type=int, required=True)
+    parser.add_argument('-t', '--timeout', help=timeout_help, type=float,
+                        required=False)
     return parser.parse_args()
 
 

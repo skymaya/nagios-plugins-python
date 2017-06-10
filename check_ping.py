@@ -70,16 +70,11 @@ def do_argparser():
     packets_help = 'Optional: specify the number of packets to transmit, defaults to 5'
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-H', '--host',
-                        help=host_help, required=True)
-    parser.add_argument('-w', '--warn',
-                        help=warn_help, required=True)
-    parser.add_argument('-c', '--critical',
-                        help=critical_help, required=True)
-    parser.add_argument('-t', '--timeout',
-                        help=timeout_help, required=False)
-    parser.add_argument('-p', '--packets',
-                        help=packets_help, required=False)
+    parser.add_argument('-H', '--host', help=host_help, required=True)
+    parser.add_argument('-w', '--warn', help=warn_help, required=True)
+    parser.add_argument('-c', '--critical', help=critical_help, required=True)
+    parser.add_argument('-t', '--timeout', help=timeout_help, required=False)
+    parser.add_argument('-p', '--packets', help=packets_help, required=False)
     return parser.parse_args()
 
 
