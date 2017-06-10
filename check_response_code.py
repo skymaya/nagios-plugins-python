@@ -44,11 +44,10 @@ def get_response_code(url):
 
 def do_argparser():
     """Parse and return command line arguments"""
-    usage_help = 'check_response_code.py -u url -r responsecode'
     url_help = 'URL to check, i.e. http://www.example.com'
     rcode_help = 'Expected response code returned by given URL'
 
-    parser = argparse.ArgumentParser(usage=usage_help)
+    parser = argparse.ArgumentParser()
     parser.add_argument('-u', '--url',
                         help=url_help, required=True)
     parser.add_argument('-r', '--responsecode',

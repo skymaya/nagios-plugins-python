@@ -37,11 +37,10 @@ import sys
 def do_argparser():
     """Parse and return command line arguments"""
     host_help = 'Host to check, i.e. 127.0.0.1'
-    usage_help = 'check_tcp_port.py -H host -p port -t timeout'
     port_help = 'port to check, i.e. 80'
     timeout_help = 'optional timeout, default is 5 seconds'
 
-    parser = argparse.ArgumentParser(usage=usage_help)
+    parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host',
                         help=host_help, required=True)
     parser.add_argument('-p', '--port',

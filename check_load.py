@@ -79,13 +79,12 @@ class LoadData(SNMPData):
 
 def do_argparser():
     """Parse and return command line arguments"""
-    usage_help = 'check_load.py -H host -C community -w [1,5,15] -c [1,5,15]'
     host_help = 'Host to check, i.e. 127.0.0.1'
     comm_help = 'SNMP community password'
     warn_help = 'Comma-separated values for 1, 5, 15 min load to trigger a warning'
     critical_help = 'Comma-separated values for 1, 5, 15 min load to trigger a critical alert'
 
-    parser = argparse.ArgumentParser(usage=usage_help)
+    parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host',
                         help=host_help, required=True)
     parser.add_argument('-C', '--community',

@@ -62,7 +62,6 @@ def get_rtt(output):
 
 def do_argparser():
     """Parse and return command line arguments"""
-    usage_help = 'check_ping.py -H host -w [pl,rtt] -c [pl,rtt]'
     host_help = 'Host to check, i.e. 127.0.0.1'
     warn_help = 'Comma-separated values for packet loss, transit time to trigger a warning'
     critical_help = '''Comma-separated values for packet loss, transit time to
@@ -70,7 +69,7 @@ def do_argparser():
     timeout_help = 'Optional: specify a timeout to wait for ping response, defaults to 5 seconds'
     packets_help = 'Optional: specify the number of packets to transmit, defaults to 5'
 
-    parser = argparse.ArgumentParser(usage=usage_help)
+    parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host',
                         help=host_help, required=True)
     parser.add_argument('-w', '--warn',

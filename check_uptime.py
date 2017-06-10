@@ -92,7 +92,6 @@ def to_seconds(val, timetype):
 
 def do_argparser():
     """Parse and return command line arguments"""
-    usage_help = 'check_uptime.py -H host -C community -w val -c val -o op -t timetype'
     host_help = 'Host to check, i.e. 127.0.0.1'
     comm_help = 'SNMP community password'
     warn_help = 'Length of uptime to generate a warning'
@@ -101,7 +100,7 @@ def do_argparser():
     (gt) or less than (lt)'''
     tt_help = 'Measure uptime in seconds (sec), minutes (min), hours (hr), or days (day)'
 
-    parser = argparse.ArgumentParser(usage=usage_help)
+    parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host',
                         help=host_help, required=True)
     parser.add_argument('-C', '--community',

@@ -52,14 +52,13 @@ def convert_today_date():
 
 def do_argparser():
     """Parse and return command line arguments"""
-    usage_help = 'check_ssl.py -H host -p port -w warn -c critical -i issuer'
     host_help = 'Host to check, i.e. 127.0.0.1'
     port_help = 'port to check, i.e. 443'
     warn_help = 'Number of days until cert expiration to trigger a warning'
     critical_help = 'Number of days until cert expiration to trigger an alert'
     issuer_help = 'Optional: name of issuer, i.e COMODO'
 
-    parser = argparse.ArgumentParser(usage=usage_help)
+    parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host',
                         help=host_help, required=True)
     parser.add_argument('-p', '--port',
