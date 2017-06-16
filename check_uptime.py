@@ -42,16 +42,26 @@ from datetime import timedelta
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 
 
-class SNMPData(object): # pylint: disable=too-few-public-methods
-    """Functions to make an SNMP connection to retrieve data"""
+class SNMPData(object): # pylint: disable=I0011,R0903
+    """
+    Make an SNMP connection and return the results with do_snmpget()
+
+    :param community: SNMP community password for host
+    :param host: hostname or IP of host
+    """
     def __init__(self, community, host):
         self.community = community
         self.host = host
 
     @staticmethod
     def do_snmpget(community, host, oid):
-        """Given an list of one or more oids, community password, and host,
-        return the result of an snmpget"""
+        """
+        Return the results of an snmpget
+
+        :param community: SNMP community password for host
+        :param host: hostname or IP of host
+        :param oid: SNMP oid to retrieve data from the host
+        """
         cmd_gen = cmdgen.CommandGenerator()
         err_found, err_status, err_index, var_binds = cmd_gen.getCmd(
             cmdgen.CommunityData(community),
@@ -63,7 +73,12 @@ class SNMPData(object): # pylint: disable=too-few-public-methods
 
 
 class UptimeData(SNMPData):
-    """Functions to make an SNMP connection to retrieve system uptime data"""
+    """
+    Return the formatted results of an snmpget for system uptime data
+
+    :param community: SNMP community password for host
+    :param host: hostname or IP of host
+    """
     def __init__(self, community, host):
         self.oids = ['1.3.6.1.2.1.25.1.1.0']
         self.data = self.do_snmpget(community, host, self.oids)
@@ -78,8 +93,13 @@ class UptimeData(SNMPData):
 
 
 def to_seconds(val, timetype):
-    """Given a time type (i.e. sec, min, hr, day) and value, convert to
-    seconds and return the value in seconds"""
+    """
+    Convert and return a value in seconds from seconds (sec), minutes (min),
+    hours (hr), or days(day)
+
+    :param val: initial value for the time type
+    :param timetype: time type as sec, min, hr, or day
+    """
     if timetype == "sec":
         return val
     elif timetype == "min":

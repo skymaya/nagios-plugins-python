@@ -49,9 +49,15 @@ def do_argparser():
 
 
 def socket_connect(host, port, timeout):
-    """Given a host, port, and timeout values, attempt to connect to the port
-    and throw an exception with CRITICAL message if it fails or print OK status
-    if successful"""
+    """
+    Return an exit code based on success or failure of a TCP socket connection.
+    Exit code of 2 is returned for a failure and exit code of 0 is returned for
+    a success.
+
+    :param host: hostname or IP of host
+    :param port: port to connect to
+    :param timeout: timeout in seconds for the connection
+    """
     try:
         sock = socket.socket()
         sock.settimeout(timeout)

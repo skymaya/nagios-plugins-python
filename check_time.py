@@ -41,16 +41,26 @@ from datetime import datetime, timedelta
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 
 
-class SNMPData(object): # pylint: disable=too-few-public-methods
-    """Functions to make an SNMP connection to retrieve data"""
+class SNMPData(object): # pylint: disable=I0011,R0903
+    """
+    Make an SNMP connection and return the results with do_snmpget()
+
+    :param community: SNMP community password for host
+    :param host: hostname or IP of host
+    """
     def __init__(self, community, host):
         self.community = community
         self.host = host
 
     @staticmethod
     def do_snmpget(community, host, oid):
-        """Given an list of one or more oids, community password, and host,
-        return the result of an snmpget"""
+        """
+        Return the results of an snmpget
+
+        :param community: SNMP community password for host
+        :param host: hostname or IP of host
+        :param oid: SNMP oid to retrieve data from the host
+        """
         cmd_gen = cmdgen.CommandGenerator()
         err_found, err_status, err_index, var_binds = cmd_gen.getCmd(
             cmdgen.CommunityData(community),
@@ -62,7 +72,12 @@ class SNMPData(object): # pylint: disable=too-few-public-methods
 
 
 class TimeData(SNMPData):
-    """Functions to make an SNMP connection to retrieve system uptime data"""
+    """
+    Return the formatted results of an snmpget for system time data
+
+    :param community: SNMP community password for host
+    :param host: hostname or IP of host
+    """
     def __init__(self, community, host):
         self.oids = [(('HOST-RESOURCES-MIB', 'hrSystemDate'), 0)]
         self.data = self.do_snmpget(community, host, self.oids)
@@ -71,9 +86,12 @@ class TimeData(SNMPData):
 
     @staticmethod
     def convert_to_utc(dto, offset):
-        """Given a datetime object in the format yyyy-mm-dd 24:mm:ss.ms and
-        utc offset list in the format [hrs, mins], convert to utc and return
-        converted datetime"""
+        """
+        Return a datetime object converted to UTC based on UTC offset
+
+        :param dto: datetime object in the format of yyyy-mm-dd 24:mm:ss.ms
+        :param offset: UTC offset in the format [hrs, mins] (this is a list)
+        """
         # Possibly a silly way to convert to UTC but avoiding importing
         # additional 3rd party libraries for now
         if offset[0] >= 0:

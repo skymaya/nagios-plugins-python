@@ -37,16 +37,26 @@ import sys
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 
 
-class SNMPData(object): # pylint: disable=too-few-public-methods
-    """Functions to make an SNMP connection to retrieve data"""
+class SNMPData(object): # pylint: disable=I0011,R0903
+    """
+    Make an SNMP connection and return the results with do_snmpget()
+
+    :param community: SNMP community password for host
+    :param host: hostname or IP of host
+    """
     def __init__(self, community, host):
         self.community = community
         self.host = host
 
     @staticmethod
     def do_snmpget(community, host, oid):
-        """Given an list of one or more oids, community password, and host,
-        return the result of an snmpget"""
+        """
+        Return the results of an snmpget
+
+        :param community: SNMP community password for host
+        :param host: hostname or IP of host
+        :param oid: SNMP oid to retrieve data from the host
+        """
         cmd_gen = cmdgen.CommandGenerator()
         err_found, err_status, err_index, var_binds = cmd_gen.getCmd(
             cmdgen.CommunityData(community),
@@ -58,7 +68,13 @@ class SNMPData(object): # pylint: disable=too-few-public-methods
 
 
 class UserData(SNMPData):
-    """Functions to make an SNMP connection to retrieve system users"""
+    """
+    Return the formatted results of an snmpget for the number of logged in
+    Unix users
+
+    :param community: SNMP community password for host
+    :param host: hostname or IP of host
+    """
     def __init__(self, community, host):
         self.oids = ['1.3.6.1.2.1.25.1.5.0']
         self.data = self.do_snmpget(community, host, self.oids)
