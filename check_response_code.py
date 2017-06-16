@@ -37,7 +37,11 @@ import requests
 
 
 def get_response_code(url):
-    """Given a url, return the status code (i.e. 200, 404, 500, etc.)"""
+    """
+    Return the status code of a URL
+
+    :param url: URL to check
+    """
     req = requests.get(url)
     return req.status_code
 
