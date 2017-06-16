@@ -35,7 +35,11 @@ from datetime import datetime
 
 
 def convert_cert_date(date):
-    """Given a string date from SSL output, return a formatted date object"""
+    """
+    Return a formatted datetime object in the format of Sep 30 07:06:05 2013
+
+    :param date: original datetime object to convert
+    """
     new_date = date.replace('GMT', '').rstrip()
     new_date = datetime.strptime(new_date, '%b %d %H:%M:%S %Y')
     return new_date
@@ -69,8 +73,13 @@ def do_argparser():
 
 
 def socket_connect(host, port, timeout):
-    """Given a host, SSL port, and a timeout value, create a connection
-    socket and return the certificate details"""
+    """
+    Return SSL certificate details
+
+    :param host: hostname to check
+    :param port: SSL port of host
+    :param timeout: timeout to wait for socket connection
+    """
     try:
         context = ssl.create_default_context()
         ssl_sock = context.wrap_socket(socket.socket(), server_hostname=host)
