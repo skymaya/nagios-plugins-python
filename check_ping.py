@@ -4,6 +4,7 @@
 
 # Author: Sky Maya
 # https://github.com/skymaya
+# Version 1.0.0, 2017
 # Pings a host and warns or alerts critical if actual packet loss or transit
 # time exceeds given values.
 #
@@ -79,6 +80,7 @@ def do_argparser():
     trigger a critical alert'''
     timeout_help = 'Optional: specify a timeout to wait for ping response, defaults to 5 seconds'
     packets_help = 'Optional: specify the number of packets to transmit, defaults to 5'
+    version_help = 'check_ping.py, Version 1.0.0, 2017'
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host', help=host_help, required=True)
@@ -86,6 +88,8 @@ def do_argparser():
     parser.add_argument('-c', '--critical', help=critical_help, required=True)
     parser.add_argument('-t', '--timeout', help=timeout_help, required=False)
     parser.add_argument('-p', '--packets', help=packets_help, required=False)
+    parser.add_argument('-v', '--version',
+                        help=version_help, required=False)
     return parser.parse_args()
 
 

@@ -4,6 +4,7 @@
 
 # Author: Sky Maya
 # https://github.com/skymaya
+# Version 1.0.0, 2017
 # Connects to a URL and attempts to retrieve the status code. If the code does
 # not match a valid given expected code, the script will alert critical. If the
 # given expected code is invalid, the script will warn. A status of OK is only
@@ -50,11 +51,14 @@ def do_argparser():
     """Parse and return command line arguments"""
     url_help = 'URL to check, i.e. http://www.example.com'
     rcode_help = 'Expected response code returned by given URL'
+    version_help = 'check_response_code.py, Version 1.0.0, 2017'
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-u', '--url', help=url_help, required=True)
     parser.add_argument('-r', '--responsecode', help=rcode_help, type=str,
                         required=True)
+    parser.add_argument('-v', '--version',
+                        help=version_help, required=False)
     return parser.parse_args()
 
 

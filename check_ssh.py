@@ -4,6 +4,7 @@
 
 # Author: Sky Maya
 # https://github.com/skymaya
+# Version 1.0.0, 2017
 # Uses telnet to connect to a given SSH port on a host. Alerts critical if
 # something is wrong with the connection, warning if the response is unexpected,
 # or ok if the response contains SSH.
@@ -58,6 +59,7 @@ def do_argparser():
     host_help = 'URL to check, i.e. http://www.example.com'
     port_help = 'Expected response code returned by given URL'
     timeout_help = 'Optional: specify a timeout to wait for telnet response, defaults to 5 seconds'
+    version_help = 'check_ssh.py, Version 1.0.0, 2017'
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host',
@@ -66,6 +68,8 @@ def do_argparser():
                         help=port_help, required=True)
     parser.add_argument('-t', '--timeout',
                         help=timeout_help, type=float, required=False)
+    parser.add_argument('-v', '--version',
+                        help=version_help, required=False)
     return parser.parse_args()
 
 

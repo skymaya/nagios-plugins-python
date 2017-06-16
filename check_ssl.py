@@ -4,6 +4,7 @@
 
 # Author: Sky Maya
 # https://github.com/skymaya
+# Version 1.0.0, 2017
 # Connects to the SSL port of a hostname and attempts to retrieve certificate details.
 # Warning and critical values must be given as integers. Optionally, provide the
 # name of the certificate issuer (i.e COMODO). By default, the plugin will alert
@@ -61,6 +62,7 @@ def do_argparser():
     warn_help = 'Number of days until cert expiration to trigger a warning'
     critical_help = 'Number of days until cert expiration to trigger an alert'
     issuer_help = 'Optional: name of issuer, i.e COMODO'
+    version_help = 'check_ssl.py, Version 1.0.0, 2017'
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host', help=host_help, required=True)
@@ -69,6 +71,8 @@ def do_argparser():
     parser.add_argument('-c', '--critical', help=critical_help, type=int,
                         required=True)
     parser.add_argument('-i', '--issuer', help=issuer_help, required=False)
+    parser.add_argument('-v', '--version',
+                        help=version_help, required=False)
     return parser.parse_args()
 
 

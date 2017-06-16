@@ -4,6 +4,7 @@
 
 # Author: Sky Maya
 # https://github.com/skymaya
+# Version 1.0.0, 2017
 # Uses SNMP to get the host's timestamp as returned by HOST-RESOURCES-MIB::hrSystemDate
 # and formats it into a UTC timestamp. Accepts a values for warning and critical
 # statuses representing time drift in minutes. An ok status is returned when the
@@ -116,6 +117,7 @@ def do_argparser():
     comm_help = 'SNMP community password'
     warn_help = 'Drift in minutes to generate a warning'
     critical_help = 'Drift in minutes to generate a critical alert'
+    version_help = 'check_time.py, Version 1.0.0, 2017'
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host', help=host_help, required=True)
@@ -124,6 +126,8 @@ def do_argparser():
                         required=True)
     parser.add_argument('-c', '--critical', help=critical_help, type=float,
                         required=True)
+    parser.add_argument('-v', '--version',
+                        help=version_help, required=False)
     return parser.parse_args()
 
 

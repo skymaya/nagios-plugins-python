@@ -4,6 +4,7 @@
 
 # Author: Sky Maya
 # https://github.com/skymaya
+# Version 1.0.0, 2017
 # Attempts to connect to a given port for the given host. A custom timeout value
 # may be provided but the default is 5 seconds. This plugin can be used to check
 # any tcp port connection; 80, 443, 22, 21, 25, etc. It's just a very generic
@@ -39,12 +40,15 @@ def do_argparser():
     host_help = 'Host to check, i.e. 127.0.0.1'
     port_help = 'port to check, i.e. 80'
     timeout_help = 'optional timeout, default is 5 seconds'
+    version_help = 'check_tcp_port.py, Version 1.0.0, 2017'
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host', help=host_help, required=True)
     parser.add_argument('-p', '--port', help=port_help, type=int, required=True)
     parser.add_argument('-t', '--timeout', help=timeout_help, type=float,
                         required=False)
+    parser.add_argument('-v', '--version',
+                        help=version_help, required=False)
     return parser.parse_args()
 
 

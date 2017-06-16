@@ -4,6 +4,7 @@
 
 # Author: Sky Maya
 # https://github.com/skymaya
+# Version 1.0.0, 2017
 # Uses snmpget to return the 1 minute, 5 minute, and 15 minute load levels of
 # a host. Accepts warning and critical values as comma-separated floats or integers
 # and compares them to current load levels.
@@ -98,12 +99,15 @@ def do_argparser():
     comm_help = 'SNMP community password'
     warn_help = 'Comma-separated values for 1, 5, 15 min load to trigger a warning'
     critical_help = 'Comma-separated values for 1, 5, 15 min load to trigger a critical alert'
+    version_help = 'check_load.py, Version 1.0.0, 2017'
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host', help=host_help, required=True)
     parser.add_argument('-C', '--community', help=comm_help, required=True)
     parser.add_argument('-w', '--warn', help=warn_help, required=True)
     parser.add_argument('-c', '--critical', help=critical_help, required=True)
+    parser.add_argument('-v', '--version',
+                        help=version_help, required=False)
     return parser.parse_args()
 
 

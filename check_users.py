@@ -4,6 +4,7 @@
 
 # Author: Sky Maya
 # https://github.com/skymaya
+# Version 1.0.0, 2017
 # Uses SNMP to check the number of logged in system (Unix) users. Returns an ok
 # status if the number of users is less than the warning level, a warning status
 # if the number of users is greater than or equal to the warning level but less
@@ -91,6 +92,7 @@ def do_argparser():
     comm_help = 'SNMP community password'
     warn_help = 'Number of logged in users to generate a warning'
     critical_help = 'Number of logged in users to generate a critical alert'
+    version_help = 'check_users.py, Version 1.0.0, 2017'
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host',
@@ -101,6 +103,8 @@ def do_argparser():
                         help=warn_help, type=int, required=True)
     parser.add_argument('-c', '--critical',
                         help=critical_help, type=int, required=True)
+    parser.add_argument('-v', '--version',
+                        help=version_help, required=False)
     return parser.parse_args()
 
 

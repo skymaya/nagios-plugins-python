@@ -4,6 +4,7 @@
 
 # Author: Sky Maya
 # https://github.com/skymaya
+# Version 1.0.0, 2017
 # Attempts to get uptime data from a host via snmp. The data is returned as
 # timeticks and converted to seconds. An operator argument is accepted to
 # determine when to produce ok, warning, or critical statuses. The operator can be
@@ -119,6 +120,7 @@ def do_argparser():
     op_help = '''Operator to use with critical and warning values; greater than
     (gt) or less than (lt)'''
     tt_help = 'Measure uptime in seconds (sec), minutes (min), hours (hr), or days (day)'
+    version_help = 'check_uptime.py, Version 1.0.0, 2017'
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host',
@@ -133,6 +135,8 @@ def do_argparser():
                         help=op_help, required=True)
     parser.add_argument('-t', '--timetype',
                         help=tt_help, required=True)
+    parser.add_argument('-v', '--version',
+                        help=version_help, required=False)
     return parser.parse_args()
 
 
