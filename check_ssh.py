@@ -33,8 +33,13 @@ import argparse
 
 
 def telnet_connect(host, port, timeout):
-    """Given a host, port, and timeout value, return data response from
-    telnet connection"""
+    """
+    Return data response from a telnet connection
+
+    :param host: hostname or IP for the telnet connection
+    :param port: host port to check
+    :param timeout: timeout to wait for connection
+    """
     try:
         tlnt = telnetlib.Telnet()
         tlnt.open(host, port, timeout)
