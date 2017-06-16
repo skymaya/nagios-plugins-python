@@ -32,8 +32,13 @@ import sys
 
 
 def do_ping(packets, host, timeout):
-    """Given the number of packets to transmit, host IP, and timeout value,
-    ping the host and return a list containing the results"""
+    """
+    Return a list of results from a ping command
+
+    :param packets: number of packets to transmit
+    :param host: hostname or IP of host
+    :param timeout: timeout to wait for results
+    """
     ping = subprocess.Popen(['ping', '-q', '-W', timeout, '-c', packets, host],
                             stdout=subprocess.PIPE)
     output = str(ping.communicate()[0])
@@ -43,8 +48,11 @@ def do_ping(packets, host, timeout):
 
 
 def get_packetloss(output):
-    """Given the list output of ping results using do_ping(), return the packet
-    loss percentage as a float"""
+    """
+    Return ping packet loss percentage
+
+    :param output: list of ping results obtained from do_ping()
+    """
     packetloss = [i for i in output if 'packet loss' in i]
     packetloss = '{0}'.format(packetloss[0])
     packetloss = re.search(r'(\d)%', packetloss).group().replace('%', '')
@@ -52,8 +60,11 @@ def get_packetloss(output):
 
 
 def get_rtt(output):
-    """Given the list output of ping results using do_ping(), return the average
-    transit time in milliseconds as a float"""
+    """
+    Return the average transit time in milliseconds
+
+    :param output: list of ping results obtained from do_ping()
+    """
     rtt = [i for i in output if 'rtt' in i and 'avg' in i]
     rtt = '{0}'.format(rtt[0])
     rtt = re.search(r'\/(\d.*?)\/', rtt).group().replace('/', '')
