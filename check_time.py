@@ -14,8 +14,6 @@
 # equal to or greater than the critical value. Setting a warning value of no
 # less than 1 minute is recommended.
 #
-# REQUIRES: pysnmp
-#
 # Example Nagios command for commands.cfg (or where your command templates are stored):
 #
 # define command {

@@ -10,7 +10,7 @@
 # given expected code is invalid, the script will warn. A status of OK is only
 # produced when the codes are valid and match.
 #
-# REQUIRES: requests (pip install requests)
+# REQUIRES: requests
 #
 # Example Nagios command for commands.cfg (or where your command templates are stored):
 #

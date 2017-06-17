@@ -9,8 +9,6 @@
 # a host. Accepts warning and critical values as comma-separated floats or integers
 # and compares them to current load levels.
 #
-# REQUIRES: pysnmp
-#
 # Example Nagios command for commands.cfg (or where your command templates are stored):
 #
 # define command {

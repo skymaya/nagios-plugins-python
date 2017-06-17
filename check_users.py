@@ -11,8 +11,6 @@
 # than the critical level, or a critical status when the number of users is
 # greater than or equal to the critical level.
 #
-# REQUIRES: pysnmp
-#
 # Example Nagios command for commands.cfg (or where your command templates are stored):
 #
 # define command {

@@ -15,8 +15,6 @@
 # the uptime is less than 1 day, or show an ok status if the uptime is greater
 # than 5 days.
 #
-# REQUIRES: pysnmp
-#
 # Example Nagios command for commands.cfg (or where your command templates are stored):
 #
 # define command {
